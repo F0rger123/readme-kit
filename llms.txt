@@ -1,0 +1,11 @@
+# readme-kit
+
+> A set of tools that gives every repo a README matching the app (banner, screenshots, plain-English diagrams) and an AI guide, and keeps them up to date.
+
+If a person shared this repository with you, read the AI guide first.
+
+## Start here
+- [AI guide](https://raw.githubusercontent.com/F0rger123/readme-kit/main/AGENTS.md): what it is, what to ask, setup steps, how to use it
+- [README](https://raw.githubusercontent.com/F0rger123/readme-kit/main/README.md)
+- [Runbook](https://raw.githubusercontent.com/F0rger123/readme-kit/main/RUNBOOK.md)
+- [Example data](https://raw.githubusercontent.com/F0rger123/readme-kit/main/examples/data/repos.json)

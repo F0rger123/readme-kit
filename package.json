@@ -1,0 +1,13 @@
+{
+  "name": "readme-kit",
+  "private": true,
+  "type": "module",
+  "description": "Builds and maintains READMEs, banners, screenshots and AI-agent guides for F0rger123's repos",
+  "scripts": {
+    "langs": "node langs.mjs",
+    "agents": "node agents.mjs work",
+    "build": "node build.mjs work work/langs.txt",
+    "serve": "node serve.mjs"
+  },
+  "dependencies": { "playwright-core": "^1.63.0" }
+}

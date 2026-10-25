@@ -1,0 +1,13 @@
+{
+ "acme-crm": {
+  "theme": "agency", "title": "Acme CRM", "eyebrow": "ACME · CRM · OPERATING SYSTEM",
+  "tagline": "Every client, quote and invoice in one place.", "kicker": "FOR SMALL SERVICE BUSINESSES",
+  "strip": ["Clients", "Quotes", "Jobs", "Invoices", "Calendar", "Reports"],
+  "a": "#f4f4f2", "b": "#737373", "badge": "0a0a0a", "code": "ACME-01", "chips": [], "license": "mit",
+  "mermaid": {"fill": "#0a0a0a", "text": "#f4f4f2", "border": "#737373", "line": "#8a8a8a"}
+ },
+ "pocket-coach": {
+  "title": "POCKET COACH", "code": "PC-01", "tagline": "A tiny habit coach that lives in your phone.",
+  "chips": ["Kotlin", "Jetpack Compose", "Room"], "a": "#22d3ee", "b": "#a855f7", "sides": 6, "license": "mit"
+ }
+}
