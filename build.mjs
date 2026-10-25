@@ -242,8 +242,9 @@ function nav(md) {
 
 // Give every Mermaid block the repo's brand palette (unless it sets its own init).
 function brandMermaid(md, c) {
-  if (!c.mermaid) return md;
-  const m = c.mermaid;
+  // No palette in repos.json: derive one from the banner colors (dark boxes, accent borders) so every
+  // repo's diagrams match its banner and stay readable in GitHub's light and dark themes.
+  const m = c.mermaid || { fill: "#0d1117", text: "#e6edf3", border: c.a || "#8b949e", line: c.b || c.a || "#8b949e", fill2: "#161b22" };
   const vars = { primaryColor: m.fill, primaryTextColor: m.text, primaryBorderColor: m.border, lineColor: m.line, secondaryColor: m.fill2 || m.fill, tertiaryColor: m.fill3 || m.fill, clusterBkg: m.cluster || "transparent", clusterBorder: m.border, noteBkgColor: m.fill2 || m.fill, noteTextColor: m.text, actorBkg: m.fill, actorTextColor: m.text, actorBorder: m.border, signalColor: m.line, signalTextColor: m.line, labelBoxBkgColor: m.fill, fontFamily: m.font || "inherit" };
   const init = `%%{init: {'theme':'base','themeVariables':${JSON.stringify(vars).replace(/"/g, "'")}}}%%`;
   return md.replace(/```mermaid\n(?!%%\{init)/g, "```mermaid\n" + init + "\n");
