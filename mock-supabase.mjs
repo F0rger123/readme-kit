@@ -1,4 +1,4 @@
-// Minimal fake Supabase (auth + PostgREST + RPC) on :54399 so signed-in app screens can render
+// Minimal fake Supabase (auth + PostgREST + RPC) on :3199 (MOCK_PORT) so signed-in app screens can render
 // for README screenshots without touching any real project. Logs every request path so demo
 // data can be added per table in fixtures.json.
 import http from "node:http";
@@ -32,6 +32,16 @@ http.createServer((req, res) => {
   if (m) {
     const key = (m[1] ? "rpc:" : "") + m[2];
     let rows = fx[key] ?? (m[1] ? null : []);
+    if (!m[1] && Array.isArray(rows)) {
+      // Honour simple `col=eq.value` filters, so lookups like "my employee row" find one row.
+      // Rows without that column are kept, so fixtures can stay loose.
+      for (const [col, v] of url.searchParams) {
+        if (!v.startsWith("eq.")) continue;
+        rows = rows.filter((r) => !(col in r) || String(r[col]) === v.slice(3));
+      }
+      const limit = Number(url.searchParams.get("limit"));
+      if (limit) rows = rows.slice(0, limit);
+    }
     const single = (req.headers.accept || "").includes("vnd.pgrst.object");
     if (single) return Array.isArray(rows) ? (rows.length ? send(200, rows[0]) : send(406, { code: "PGRST116", message: "no rows" })) : send(200, rows ?? {});
     const n = fx["count:" + m[2]] ?? (Array.isArray(rows) ? rows.length : 0);
@@ -39,4 +49,4 @@ http.createServer((req, res) => {
   }
   if (url.pathname.startsWith("/storage/v1/")) return send(200, []);
   send(404, { message: "not mocked" });
-}).listen(54399, () => console.log("mock supabase on :54399"));
+}).listen(Number(process.env.MOCK_PORT || 3199), () => console.log(`mock supabase on :${process.env.MOCK_PORT || 3199}`));

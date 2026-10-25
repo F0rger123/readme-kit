@@ -1,6 +1,7 @@
 // Captures README screenshots with Playwright + the system Edge browser.
 // Usage: node shoot.mjs <playwright-core dir> <jobs.json> [onlyName...]
-// Job: { name, url, out, width, height, scale, wait, selector, labelText, colorScheme, eval, fullPage }
+// Job: { name, url, out, width, height, scale, wait, selector, labelText, colorScheme, eval, fullPage,
+//        supabaseSession (cookie name), supabaseLocal (localStorage key), localStorage, clip, debug }
 import fs from "node:fs";
 import path from "node:path";
 import { createRequire } from "node:module";
@@ -18,15 +19,22 @@ for (const j of jobs) {
     colorScheme: j.colorScheme || "light",
     reducedMotion: "reduce",
   });
-  if (j.supabaseSession) {
+  if (j.supabaseSession || j.supabaseLocal) {
     // Fake signed-in session for the local mock Supabase (mock-supabase.mjs); never a real account
     const b64 = (o) => Buffer.from(JSON.stringify(o)).toString("base64url");
     const jwt = `${b64({ alg: "HS256", typ: "JWT" })}.${b64({ sub: "00000000-0000-4000-8000-000000000001", role: "authenticated", aud: "authenticated", email: "owner@example.com", exp: 4102444800, iat: 1767225600, session_id: "demo" })}.demo-signature`;
     const session = { access_token: jwt, refresh_token: "demo", token_type: "bearer", expires_in: 31536000, expires_at: 4102444800,
       user: { id: "00000000-0000-4000-8000-000000000001", aud: "authenticated", role: "authenticated", email: "owner@example.com" } };
-    const value = "base64-" + Buffer.from(JSON.stringify(session)).toString("base64url");
-    const { origin } = new URL(j.url);
-    await ctx.addCookies([{ name: j.supabaseSession, value, url: origin }]);
+    if (j.supabaseSession) {
+      // SSR apps (@supabase/ssr) read the session from a cookie
+      const value = "base64-" + Buffer.from(JSON.stringify(session)).toString("base64url");
+      const { origin } = new URL(j.url);
+      await ctx.addCookies([{ name: j.supabaseSession, value, url: origin }]);
+    }
+    if (j.supabaseLocal) {
+      // Browser-only apps (supabase-js) read it from localStorage, set before the app boots
+      await ctx.addInitScript(([k, v]) => localStorage.setItem(k, v), [j.supabaseLocal, JSON.stringify(session)]);
+    }
   }
   const page = await ctx.newPage();
   page.on("pageerror", (e) => j.debug && console.log("  pageerror:", e.message.slice(0, 160)));
