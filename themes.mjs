@@ -9,7 +9,7 @@ const FILES = {
   geist: "geist-800.woff2", geistmono: "geist-mono-500.woff2", schibsted: "schibsted-800.woff2", plexmono: "plexmono-600.woff2",
   bebas: "bebas-400.woff2", cormorant: "cormorant-700.woff2", lora: "lora-500.woff2", fraunces: "fraunces-700.woff2",
   inter: "inter-500.woff2", inter900: "inter-900.woff2", inter900i: "inter-900i.woff2", spacegrotesk: "spacegrotesk-700.woff2",
-  jakarta: "jakarta-600.woff2", jbmono: "jbmono-600.woff2", bodoni: "bodoni-800i.woff2",
+  jakarta: "jakarta-600.woff2", jbmono: "jbmono-600.woff2", bodoni: "bodoni-800i.woff2", orbitron: "orbitron-800.woff2", sharetech: "sharetech-400.woff2", dmsans: "dmsans-700.woff2",
 };
 export const fontFace = (...names) => names.map((n) => {
   const b64 = fs.readFileSync(path.join(FONT_DIR, FILES[n])).toString("base64");
@@ -370,6 +370,265 @@ ${built}`,
   `<linearGradient id="ban" x1="0" x2="1"><stop offset="0" stop-color="${g.blue}"/><stop offset="1" stop-color="${g.green}"/></linearGradient>`);
 }
 
+// ---------------------------------------------------------------- blueprint: light product blueprint, an app wireframe that draws itself
+export function blueprint(c) {
+  const p = c.palette || { bg: "#f8fafc", card: "#ffffff", ink: "#0f172a", mute: "#64748b", line: "#e2e8f0", soft: "#f1f5f9", a: "#6366f1", b: "#7c3aed", ok: "#059669" };
+  const items = c.items || ["Fixed sidebar", "Top navigation", "Leads & pipeline", "Jobs & calendar", "AI assistant"];
+  const list = items.map((t, i) => `<g class="li" style="animation-delay:${(1 + i * 0.5).toFixed(1)}s"><circle cx="1000" cy="${142 + i * 40}" r="5" fill="${i === items.length - 1 ? p.b : p.ok}"/><text x="1016" y="${147 + i * 40}" class="sans" font-size="15" fill="${p.ink}">${esc(t)}</text></g>`).join("");
+  return svg(`${c.title}: ${c.tagline}`, `${fontFace("spacegrotesk", "inter")}
+.sg{font-family:spacegrotesk,"Segoe UI",sans-serif}.sans{font-family:inter,"Segoe UI",sans-serif}
+.draw{stroke-dasharray:1400;animation:draw 8s ease-in-out infinite backwards}@keyframes draw{0%{stroke-dashoffset:1400}35%,90%{stroke-dashoffset:0}100%{stroke-dashoffset:1400}}
+.sk{animation:sk 8s ease-in-out infinite backwards}@keyframes sk{0%,30%{opacity:0}40%,90%{opacity:1}100%{opacity:0}}
+.li{animation:li 8s ease-out infinite backwards}@keyframes li{0%{opacity:0;transform:translateX(-8px)}10%,90%{opacity:1;transform:none}100%{opacity:0}}`,
+  `<rect width="${W}" height="${H}" fill="${p.bg}"/><rect width="${W}" height="${H}" fill="url(#bpgrid)"/>
+<rect x="60" y="48" width="40" height="40" rx="20" fill="${p.ink}"/><text x="80" y="74" text-anchor="middle" class="sg" font-size="16" fill="#fff">${esc(c.logo || "PC")}</text>
+<text x="112" y="76" class="sg" font-size="22" fill="${p.ink}">${esc(c.brand || c.title)}</text>
+<rect x="${120 + (c.brand || c.title).length * 12}" y="56" width="66" height="24" rx="12" fill="${p.soft}" stroke="${p.line}"/><circle cx="${134 + (c.brand || c.title).length * 12}" cy="68" r="3" fill="${p.ok}"/><text x="${142 + (c.brand || c.title).length * 12}" y="73" class="sans" font-size="12" fill="${p.mute}">${esc(c.version || "v1")}</text>
+<text x="56" y="178" class="sg" font-size="${c.titleSize || 64}" letter-spacing="-2" fill="${p.ink}">${esc(c.title)}</text>
+<text x="60" y="222" class="sans" font-size="20" fill="${p.mute}">${esc(c.tagline)}</text>
+<rect x="60" y="262" width="168" height="40" rx="20" fill="url(#ai)"/><text x="144" y="287" text-anchor="middle" class="sans" font-size="14" fill="#fff">${esc(c.cta || "AI Assistant")}</text>
+<rect x="240" y="262" width="150" height="40" rx="20" fill="${p.ink}"/><text x="315" y="287" text-anchor="middle" class="sans" font-size="14" fill="#fff">${esc(c.cta2 || "Export PDF")}</text>
+<text x="60" y="352" class="sans" font-size="13" letter-spacing="2" fill="${p.mute}">${esc(c.eyebrow || "")}</text>
+<rect x="560" y="70" width="400" height="290" rx="18" fill="${p.card}" stroke="${p.line}"/>
+<rect class="draw" x="584" y="94" width="352" height="242" rx="16" fill="none" stroke="${p.ink}" stroke-width="7"/>
+<g class="sk" style="animation-delay:.2s"><rect x="606" y="114" width="80" height="12" rx="6" fill="${p.line}"/><line x1="588" y1="140" x2="932" y2="140" stroke="${p.line}"/><line x1="700" y1="140" x2="700" y2="332" stroke="${p.line}"/>
+<rect x="604" y="156" width="82" height="18" rx="9" fill="${p.line}"/><rect x="604" y="182" width="88" height="18" rx="9" fill="${p.line}"/><rect x="604" y="208" width="70" height="18" rx="9" fill="${p.line}"/>
+<rect x="716" y="156" width="96" height="12" rx="6" fill="${p.line}"/><rect x="716" y="182" width="66" height="72" rx="10" fill="${p.soft}"/><rect x="790" y="182" width="66" height="72" rx="10" fill="${p.soft}"/><rect x="864" y="182" width="56" height="72" rx="10" fill="${p.soft}"/></g>
+<rect x="980" y="70" width="252" height="290" rx="18" fill="${p.card}" stroke="${p.line}"/>
+<text x="1000" y="108" class="sans" font-size="14" font-weight="600" fill="${p.ink}">${esc(c.listTitle || "Layout components")}</text>
+${list}`,
+  `<pattern id="bpgrid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M40 0H0V40" fill="none" stroke="${p.ink}" stroke-opacity=".04"/></pattern>
+<linearGradient id="ai" x1="0" x2="1"><stop offset="0" stop-color="${p.a}"/><stop offset="1" stop-color="${p.b}"/></linearGradient>`);
+}
+
+// ---------------------------------------------------------------- heartbeat: a purple report header and a commit "pulse" line across the week
+export function heartbeat(c) {
+  const p = c.palette || { top: "#667eea", bot: "#764ba2", paper: "#f5f5f7", card: "#ffffff", ink: "#2d3748", mute: "#718096", ok: "#68d391", line: "#e2e8f0" };
+  const days = c.days || ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"];
+  const beat = "M60 330 H150 l12 -34 l14 64 l12 -52 l10 22 H300 l12 -40 l14 76 l12 -60 l10 24 H450 l10 -18 l12 30 l10 -12 H600 l12 -46 l14 84 l12 -66 l10 28 H760 l8 -10 l10 16 H880 l12 -30 l14 52 l12 -38 l10 16 H1220";
+  return svg(`${c.title}: ${c.tagline}`, `${fontFace("inter", "inter900", "plexmono")}
+.sans{font-family:inter,"Segoe UI",sans-serif}.x{font-family:inter900,"Segoe UI",sans-serif}.mono{font-family:plexmono,Consolas,monospace}
+.beat{stroke-dasharray:1800;animation:beat 5s linear infinite backwards}@keyframes beat{0%{stroke-dashoffset:1800}70%,100%{stroke-dashoffset:0}}
+.blip{animation:blip 1.2s ease-in-out infinite}@keyframes blip{50%{opacity:.3}}
+.card{animation:card 5s ease-out infinite backwards}@keyframes card{0%{opacity:0;transform:translateY(10px)}12%,88%{opacity:1;transform:none}100%{opacity:0}}`,
+  `<rect width="${W}" height="${H}" fill="${p.paper}"/>
+<rect width="${W}" height="236" fill="url(#hb)"/>
+<text x="60" y="72" class="mono" font-size="13" letter-spacing="3" fill="#ffffff" fill-opacity=".8">${esc(c.eyebrow || "")}</text>
+<text x="56" y="150" class="x" font-size="78" letter-spacing="-2" fill="#ffffff">${esc(c.title)}</text>
+<text x="60" y="194" class="sans" font-size="20" fill="#ffffff" fill-opacity=".9">${esc(c.tagline)}</text>
+<circle class="blip" cx="${W - 82}" cy="66" r="7" fill="${p.ok}"/><text x="${W - 96}" y="71" text-anchor="end" class="mono" font-size="13" fill="#ffffff">${esc(c.status || "WATCHING 24/7")}</text>
+<g class="card"><rect x="840" y="96" width="380" height="118" rx="14" fill="${p.card}"/><rect x="840" y="96" width="5" height="118" rx="2" fill="${p.ok}"/>
+<text x="864" y="128" class="sans" font-size="15" font-weight="600" fill="${p.ink}">${esc(c.cardTitle || "☀️ Morning report")}</text>
+<text x="864" y="156" class="sans" font-size="14" fill="${p.mute}">${esc(c.cardLine1 || "12 commits yesterday · 3 repos")}</text>
+<text x="864" y="180" class="sans" font-size="14" fill="${p.mute}">${esc(c.cardLine2 || "Focus today: ship the invoice fix")}</text></g>
+${days.map((d, i) => `<text x="${150 + i * 152}" y="392" text-anchor="middle" class="mono" font-size="12" letter-spacing="2" fill="${p.mute}">${d}</text>`).join("")}
+<line x1="60" y1="330" x2="1220" y2="330" stroke="${p.line}"/>
+<path class="beat" d="${beat}" fill="none" stroke="${p.bot}" stroke-width="3" stroke-linejoin="round"/>`,
+  `<linearGradient id="hb" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${p.top}"/><stop offset="1" stop-color="${p.bot}"/></linearGradient>`);
+}
+
+// ---------------------------------------------------------------- reactor: dark HUD, Orbitron, rotating arc-reactor rings and a voice meter
+export function reactor(c) {
+  const C = c.accent || "#00d4ff";
+  const bars = Array.from({ length: 28 }, (_, i) => `<rect class="bar" style="animation-delay:${((i * 37) % 11) / 10}s" x="${60 + i * 16}" y="300" width="8" height="60" rx="3" fill="${C}" fill-opacity="${0.35 + ((i * 7) % 6) / 10}"/>`).join("");
+  const ticks = Array.from({ length: 60 }, (_, i) => { const a = (i / 60) * Math.PI * 2, r1 = 150, r2 = i % 5 ? 156 : 164; return `<line x1="${(960 + r1 * Math.cos(a)).toFixed(1)}" y1="${(210 + r1 * Math.sin(a)).toFixed(1)}" x2="${(960 + r2 * Math.cos(a)).toFixed(1)}" y2="${(210 + r2 * Math.sin(a)).toFixed(1)}" stroke="${C}" stroke-opacity=".5"/>`; }).join("");
+  return svg(`${c.title}: ${c.tagline}`, `${fontFace("orbitron", "sharetech")}
+.or{font-family:orbitron,"Segoe UI",sans-serif}.st{font-family:sharetech,Consolas,monospace}
+.spin{transform-origin:960px 210px;animation:spin 14s linear infinite}.spinr{transform-origin:960px 210px;animation:spin 9s linear infinite reverse}@keyframes spin{to{transform:rotate(360deg)}}
+.core{animation:core 2.4s ease-in-out infinite}@keyframes core{50%{opacity:.55}}
+.bar{transform-box:fill-box;transform-origin:bottom;animation:bar 1.1s ease-in-out infinite alternate}@keyframes bar{from{transform:scaleY(.25)}to{transform:scaleY(1)}}`,
+  `<rect width="${W}" height="${H}" fill="#0a0a0f"/><rect width="${W}" height="${H}" fill="url(#rg)"/>
+<text x="60" y="76" class="st" font-size="15" letter-spacing="4" fill="${C}">${esc(c.eyebrow || "")}</text>
+<text x="56" y="168" class="or" font-size="78" letter-spacing="6" fill="#e0e0e0">${esc(c.title)}</text>
+<text x="60" y="216" class="st" font-size="21" fill="#9aa4b2">${esc(c.tagline)}</text>
+<text x="60" y="270" class="st" font-size="14" letter-spacing="3" fill="${C}">● ${esc(c.status || "LISTENING")}</text>
+${bars}
+${ticks}
+<g class="spin"><circle cx="960" cy="210" r="128" fill="none" stroke="${C}" stroke-width="2" stroke-dasharray="120 40 30 40" stroke-opacity=".8"/></g>
+<g class="spinr"><circle cx="960" cy="210" r="104" fill="none" stroke="${C}" stroke-width="6" stroke-dasharray="40 24" stroke-opacity=".35"/></g>
+<circle cx="960" cy="210" r="78" fill="none" stroke="${C}" stroke-opacity=".6"/>
+<circle class="core" cx="960" cy="210" r="46" fill="url(#core)"/>
+<text x="960" y="404" text-anchor="middle" class="st" font-size="13" letter-spacing="3" fill="#6b7280">${esc(c.footer || "")}</text>`,
+  `<radialGradient id="rg" cx=".75" cy=".5" r=".55"><stop offset="0" stop-color="${C}" stop-opacity=".14"/><stop offset="1" stop-color="${C}" stop-opacity="0"/></radialGradient>
+<radialGradient id="core"><stop offset="0" stop-color="#ffffff"/><stop offset=".4" stop-color="${C}"/><stop offset="1" stop-color="${C}" stop-opacity=".1"/></radialGradient>`);
+}
+
+// ---------------------------------------------------------------- pocket: an Android phone with a pulsing mic and chat bubbles
+export function pocket(c) {
+  const p = c.palette || { bg: "#0b1626", navy: "#1e3a5f", blue: "#3b82f6", ink: "#ffffff", mute: "#94a3b8", bubble: "#1a2b44" };
+  const msgs = c.messages || [["you", "Remind me to call Dana at 4"], ["ai", "Done. I'll ping you at 4:00 PM."], ["you", "What's on tomorrow?"], ["ai", "Two meetings and a dentist at 2."]];
+  const bub = msgs.map(([who, t], i) => {
+    const me = who === "you", w = Math.min(230, t.length * 7.6 + 28), x = me ? 1150 - w : 892, y = 118 + i * 52;
+    return `<g class="msg" style="animation-delay:${(i * 0.9).toFixed(1)}s"><rect x="${x}" y="${y}" width="${w}" height="38" rx="16" fill="${me ? p.blue : p.bubble}"/><text x="${x + 14}" y="${y + 24}" class="sans" font-size="13" fill="${p.ink}">${esc(t)}</text></g>`;
+  }).join("");
+  return svg(`${c.title}: ${c.tagline}`, `${fontFace("jakarta", "inter")}
+.jk{font-family:jakarta,"Segoe UI",sans-serif}.sans{font-family:inter,"Segoe UI",sans-serif}
+.msg{animation:msg 7s ease-out infinite backwards}@keyframes msg{0%{opacity:0;transform:translateY(8px)}6%,90%{opacity:1;transform:none}100%{opacity:0}}
+.ring{transform-origin:1016px 360px;animation:ring 2.2s ease-out infinite}@keyframes ring{0%{transform:scale(.6);opacity:.8}100%{transform:scale(1.9);opacity:0}}`,
+  `<rect width="${W}" height="${H}" fill="${p.bg}"/><rect width="${W}" height="${H}" fill="url(#pk)"/>
+<text x="60" y="78" class="jk" font-size="13" letter-spacing="3" fill="${p.blue}">${esc(c.eyebrow || "")}</text>
+<text x="56" y="168" class="jk" font-size="76" letter-spacing="-2" fill="${p.ink}">${esc(c.title)}</text>
+<text x="60" y="214" class="sans" font-size="20" fill="${p.mute}">${esc(c.tagline)}</text>
+${(c.chips || []).map((ch, i, a) => { const x = 60 + a.slice(0, i).reduce((s, t) => s + t.length * 8.2 + 40, 0); return `<rect x="${x}" y="254" width="${ch.length * 8.2 + 28}" height="34" rx="17" fill="${p.navy}"/><text x="${x + 14}" y="276" class="sans" font-size="14" fill="${p.ink}">${esc(ch)}</text>`; }).join("")}
+<rect x="868" y="24" width="296" height="420" rx="40" fill="#05090f" stroke="#2b3c55" stroke-width="2"/>
+<rect x="880" y="36" width="272" height="410" rx="30" fill="${p.navy}"/>
+<rect x="990" y="46" width="52" height="8" rx="4" fill="#05090f"/>
+<text x="900" y="92" class="jk" font-size="16" fill="${p.ink}">${esc(c.appName || "Jarvis")}</text><circle cx="1134" cy="86" r="5" fill="#22c55e"/>
+${bub}
+<circle class="ring" cx="1016" cy="360" r="26" fill="none" stroke="${p.blue}" stroke-width="2"/>
+<circle cx="1016" cy="360" r="26" fill="${p.blue}"/><rect x="1010" y="346" width="12" height="20" rx="6" fill="#fff"/><path d="M1004 360a12 12 0 0 0 24 0M1016 372v6" stroke="#fff" stroke-width="2.5" fill="none"/>`,
+  `<radialGradient id="pk" cx=".8" cy=".6" r=".6"><stop offset="0" stop-color="${p.blue}" stop-opacity=".22"/><stop offset="1" stop-color="${p.blue}" stop-opacity="0"/></radialGradient>`);
+}
+
+// ---------------------------------------------------------------- digest: a clock sweeping 7 AM to 7 PM and two summary emails landing in an inbox
+export function digest(c) {
+  const p = c.palette || { bg: "#f8fafc", card: "#ffffff", ink: "#1a1a1a", navy: "#1e3a5f", blue: "#3b82f6", mute: "#94a3b8", line: "#e2e8f0", ok: "#22c55e" };
+  const mails = c.mails || [["7:00 AM", "☀️ Morning digest", "9 commits · 2 PRs merged · 1 to review"], ["7:00 PM", "🌙 Evening digest", "Shipped: invoice fix · Tomorrow: tests"]];
+  const mailEls = mails.map(([t, s, b], i) => `<g class="mail" style="animation-delay:${(i * 2.5).toFixed(1)}s"><rect x="716" y="${150 + i * 96}" width="500" height="80" rx="12" fill="${p.card}" stroke="${p.line}"/><circle cx="748" cy="${190 + i * 96}" r="16" fill="${i ? p.navy : p.blue}"/><text x="748" y="${195 + i * 96}" text-anchor="middle" class="sans" font-size="13" fill="#fff">BOT</text>
+<text x="776" y="${182 + i * 96}" class="sans" font-size="15" font-weight="600" fill="${p.ink}">${esc(s)}</text><text x="1196" y="${182 + i * 96}" text-anchor="end" class="mono" font-size="12" fill="${p.mute}">${esc(t)}</text>
+<text x="776" y="${206 + i * 96}" class="sans" font-size="14" fill="#475569">${esc(b)}</text></g>`).join("");
+  return svg(`${c.title}: ${c.tagline}`, `${fontFace("inter", "inter900", "plexmono")}
+.sans{font-family:inter,"Segoe UI",sans-serif}.x{font-family:inter900,"Segoe UI",sans-serif}.mono{font-family:plexmono,Consolas,monospace}
+.hand{transform-origin:150px 306px;animation:hand 10s ease-in-out infinite}@keyframes hand{0%,10%{transform:rotate(-150deg)}45%,55%{transform:rotate(30deg)}90%,100%{transform:rotate(210deg)}}
+.mail{animation:mail 10s ease-out infinite backwards}@keyframes mail{0%{opacity:0;transform:translateY(-14px)}6%,90%{opacity:1;transform:none}100%{opacity:0}}`,
+  `<rect width="${W}" height="${H}" fill="${p.bg}"/>
+<text x="60" y="78" class="mono" font-size="13" letter-spacing="3" fill="${p.blue}">${esc(c.eyebrow || "")}</text>
+<text x="56" y="152" class="x" font-size="58" letter-spacing="-2" fill="${p.navy}">${esc(c.title)}</text>
+<text x="60" y="196" class="sans" font-size="19" fill="#475569">${esc(c.tagline)}</text>
+<text x="250" y="300" class="mono" font-size="14" fill="${p.mute}">${esc(c.footnote || "")}</text>
+<text x="250" y="326" class="mono" font-size="14" fill="${p.navy}">${esc(c.footnote2 || "7:00 AM · 7:00 PM, every day")}</text>
+<circle cx="150" cy="306" r="70" fill="${p.card}" stroke="${p.line}" stroke-width="2"/>
+${Array.from({ length: 12 }, (_, i) => { const a = (i / 12) * Math.PI * 2; return `<circle cx="${(150 + 56 * Math.sin(a)).toFixed(1)}" cy="${(306 - 56 * Math.cos(a)).toFixed(1)}" r="${i % 3 ? 2.5 : 4}" fill="${i === 7 ? p.blue : p.mute}"/>`; }).join("")}
+<g class="hand"><line x1="150" y1="306" x2="150" y2="258" stroke="${p.navy}" stroke-width="4" stroke-linecap="round"/></g><circle cx="150" cy="306" r="6" fill="${p.blue}"/>
+<text x="716" y="122" class="sans" font-size="14" font-weight="600" fill="${p.navy}">Inbox</text><text x="1216" y="122" text-anchor="end" class="mono" font-size="12" fill="${p.ok}">● FREE · NO SERVER</text>
+${mailEls}`);
+}
+
+// ---------------------------------------------------------------- popup: a browser page with a Chrome extension popup capturing leads into a sheet
+export function popup(c) {
+  const p = c.palette || { page: "#f1f5f9", dark: "#0f172a", panel: "#1e293b", ink: "#e2e8f0", mute: "#94a3b8", blue: "#3b82f6", blue2: "#2563eb", green: "#22c55e", line: "#334155" };
+  const rows = c.rows || ["14 Oak St · $182k · Owner: R. Hale", "88 Birch Ln · $240k · Owner: T. Moss", "3 Cedar Ct · $199k · Owner: K. Ruiz"];
+  return svg(`${c.title}: ${c.tagline}`, `${fontFace("inter", "inter900", "plexmono")}
+.sans{font-family:inter,"Segoe UI",sans-serif}.x{font-family:inter900,"Segoe UI",sans-serif}.mono{font-family:plexmono,Consolas,monospace}
+.row{animation:row 6s ease-in-out infinite backwards}@keyframes row{0%{opacity:0;transform:translateX(-30px)}10%,88%{opacity:1;transform:none}100%{opacity:0}}
+.n,.n2{opacity:0}.n{animation:n 6s steps(1) infinite}@keyframes n{0%{opacity:1}33%,100%{opacity:0}}.n2{animation:n2 6s steps(1) infinite}@keyframes n2{0%,32%{opacity:0}33%,65%{opacity:1}66%,100%{opacity:0}}.n3{animation:n3 6s steps(1) infinite}@keyframes n3{0%,65%{opacity:0}66%,100%{opacity:1}}
+.press{animation:press 6s ease-in-out infinite}@keyframes press{80%{transform:translateY(0)}84%{transform:translateY(2px)}88%{transform:none}}`,
+  `<rect width="${W}" height="${H}" fill="${p.dark}"/>
+<text x="60" y="78" class="mono" font-size="13" letter-spacing="3" fill="${p.green}">${esc(c.eyebrow || "")}</text>
+<text x="56" y="156" class="x" font-size="64" letter-spacing="-2" fill="${p.ink}">${esc(c.title)}</text>
+<text x="60" y="200" class="sans" font-size="19" fill="${p.mute}">${esc(c.tagline)}</text>
+<text x="60" y="246" class="sans" font-size="14" fill="${p.mute}">Into your Google Sheet:</text>
+${rows.map((r, i) => `<g class="row" style="animation-delay:${(i * 0.9).toFixed(1)}s"><rect x="60" y="${262 + i * 38}" width="420" height="30" rx="6" fill="${p.panel}" stroke="${p.line}"/><rect x="60" y="${262 + i * 38}" width="4" height="30" fill="${p.green}"/><text x="76" y="${282 + i * 38}" class="mono" font-size="12" fill="${p.ink}">${esc(r)}</text></g>`).join("")}
+<rect x="540" y="40" width="440" height="352" rx="12" fill="${p.page}"/>
+<rect x="540" y="40" width="440" height="34" rx="12" fill="#e2e8f0"/><circle cx="560" cy="57" r="5" fill="#f87171"/><circle cx="576" cy="57" r="5" fill="#fbbf24"/><circle cx="592" cy="57" r="5" fill="#34d399"/>
+<rect x="612" y="48" width="280" height="18" rx="9" fill="#ffffff"/><text x="624" y="61" class="sans" font-size="11" fill="#64748b">${esc(c.site || "listings.example/for-sale")}</text>
+${[0, 1, 2].map((i) => `<rect x="560" y="${92 + i * 96}" width="120" height="80" rx="8" fill="#cbd5e1"/><rect x="694" y="${100 + i * 96}" width="150" height="12" rx="6" fill="#94a3b8"/><rect x="694" y="${122 + i * 96}" width="100" height="10" rx="5" fill="#cbd5e1"/><rect x="694" y="${142 + i * 96}" width="60" height="16" rx="8" fill="${p.green}" fill-opacity=".25"/>`).join("")}
+<rect x="900" y="60" width="320" height="320" rx="12" fill="${p.dark}" stroke="${p.line}"/>
+<rect x="900" y="60" width="320" height="70" rx="12" fill="url(#ph)"/><text x="1060" y="94" text-anchor="middle" class="sans" font-size="16" font-weight="700" fill="#fff">${esc(c.popupTitle || "🛠️ Lead Scraper")}</text><text x="1060" y="116" text-anchor="middle" class="sans" font-size="11" fill="#dbeafe">${esc(c.popupSub || "Skip trace + Google Sheets push")}</text>
+<text x="960" y="170" text-anchor="middle" class="x" font-size="28" fill="${p.blue}"><tspan class="n">1</tspan></text><text x="960" y="170" text-anchor="middle" class="x" font-size="28" fill="${p.blue}"><tspan class="n2">2</tspan></text><text x="960" y="170" text-anchor="middle" class="x" font-size="28" fill="${p.blue}"><tspan class="n3">3</tspan></text>
+<text x="960" y="190" text-anchor="middle" class="sans" font-size="11" fill="${p.mute}">Pending</text>
+<text x="1060" y="170" text-anchor="middle" class="x" font-size="28" fill="${p.blue}">3</text><text x="1060" y="190" text-anchor="middle" class="sans" font-size="11" fill="${p.mute}">Today</text>
+<text x="1160" y="170" text-anchor="middle" class="x" font-size="28" fill="${p.green}">✓</text><text x="1160" y="190" text-anchor="middle" class="sans" font-size="11" fill="${p.mute}">Sheet</text>
+<g class="press"><rect x="916" y="212" width="288" height="38" rx="8" fill="${p.green}"/><text x="1060" y="236" text-anchor="middle" class="sans" font-size="13" font-weight="600" fill="#fff">📊 Push all to Google Sheet</text></g>
+<rect x="916" y="260" width="288" height="38" rx="8" fill="${p.blue}"/><text x="1060" y="284" text-anchor="middle" class="sans" font-size="13" font-weight="600" fill="#fff">📁 Export CSV backup</text>
+<rect x="916" y="308" width="288" height="38" rx="8" fill="none" stroke="${p.line}"/><text x="1060" y="332" text-anchor="middle" class="sans" font-size="13" fill="${p.ink}">📋 View pending leads</text>`,
+  `<linearGradient id="ph" x1="0" x2="1"><stop offset="0" stop-color="${p.blue2}"/><stop offset="1" stop-color="${p.blue}"/></linearGradient>`);
+}
+
+// ---------------------------------------------------------------- pipeline: dark deal board where one deal card travels to "Closed"
+export function pipeline(c) {
+  const p = c.palette || { bg: "#0a0d14", col: "#111827", line: "#1f2937", ink: "#e2e8f0", mute: "#64748b", cyan: "#06b6d4", blue: "#3b82f6", green: "#10b981", amber: "#f59e0b", red: "#ef4444" };
+  const cols = c.columns || [["Lead", p.blue], ["Offer", p.amber], ["Contract", p.cyan], ["Closed", p.green]];
+  const cw = 150, x0 = 640;
+  const colEls = cols.map(([n, col], i) => `<rect x="${x0 + i * (cw + 10)}" y="70" width="${cw}" height="300" rx="10" fill="${p.col}" stroke="${p.line}"/><circle cx="${x0 + i * (cw + 10) + 16}" cy="92" r="4" fill="${col}"/><text x="${x0 + i * (cw + 10) + 28}" y="97" class="dm" font-size="13" fill="${p.ink}">${esc(n)}</text>
+<rect x="${x0 + i * (cw + 10) + 10}" y="${180 + (i % 2) * 70}" width="${cw - 20}" height="52" rx="8" fill="#0f172a" stroke="${p.line}"/><rect x="${x0 + i * (cw + 10) + 20}" y="${192 + (i % 2) * 70}" width="${70 + (i * 13) % 30}" height="8" rx="4" fill="${p.mute}"/><rect x="${x0 + i * (cw + 10) + 20}" y="${208 + (i % 2) * 70}" width="44" height="8" rx="4" fill="${col}" fill-opacity=".6"/>`).join("");
+  return svg(`${c.title}: ${c.tagline}`, `${fontFace("dmsans", "plexmono")}
+.dm{font-family:dmsans,"Segoe UI",sans-serif}.mono{font-family:plexmono,Consolas,monospace}
+.deal{animation:deal 8s cubic-bezier(.6,0,.3,1) infinite}@keyframes deal{0%,12%{transform:translateX(0)}25%,37%{transform:translateX(160px)}50%,62%{transform:translateX(320px)}75%,92%{transform:translateX(480px)}100%{transform:translateX(0)}}
+.fee{animation:fee 8s steps(1) infinite}@keyframes fee{0%,74%{opacity:0}75%,92%{opacity:1}93%,100%{opacity:0}}`,
+  `<rect width="${W}" height="${H}" fill="${p.bg}"/><rect width="${W}" height="${H}" fill="url(#pl)"/>
+<text x="60" y="76" class="mono" font-size="13" letter-spacing="3" fill="${p.cyan}">⚡ ${esc(c.eyebrow || "")}</text>
+<text x="56" y="156" class="dm" font-size="60" letter-spacing="-2" fill="${p.ink}">${esc(c.title)}</text>
+<text x="60" y="200" class="dm" font-size="19" fill="#94a3b8">${esc(c.tagline)}</text>
+${(c.files || ["index.html", "style.css", "app.js"]).map((f, i) => `<rect x="${60 + i * 150}" y="250" width="136" height="44" rx="8" fill="${p.col}" stroke="${p.line}"/><text x="${128 + i * 150}" y="277" text-anchor="middle" class="mono" font-size="13" fill="${p.ink}">${esc(f)}</text>`).join("")}
+<text x="60" y="336" class="mono" font-size="13" fill="${p.mute}">${esc(c.footnote || "")}</text>
+${colEls}
+<g class="deal"><rect x="${x0 + 8}" y="116" width="${cw - 16}" height="52" rx="8" fill="#0b1220" stroke="${p.cyan}" stroke-width="1.5"/><text x="${x0 + 20}" y="138" class="dm" font-size="13" fill="${p.ink}">${esc(c.deal || "412 Elm St")}</text><text x="${x0 + 20}" y="157" class="mono" font-size="11" fill="${p.cyan}">${esc(c.dealValue || "ARV $240k")}</text></g>
+<g class="fee"><rect x="${x0 + 3 * (cw + 10) + 14}" y="330" width="${cw - 28}" height="28" rx="14" fill="${p.green}" fill-opacity=".18" stroke="${p.green}"/><text x="${x0 + 3 * (cw + 10) + cw / 2}" y="349" text-anchor="middle" class="mono" font-size="12" fill="${p.green}">${esc(c.fee || "+$12,500 fee")}</text></g>`,
+  `<radialGradient id="pl" cx=".05" cy="0" r=".7"><stop offset="0" stop-color="${p.cyan}" stop-opacity=".14"/><stop offset="1" stop-color="${p.cyan}" stop-opacity="0"/></radialGradient>`);
+}
+
+// ---------------------------------------------------------------- relay: a form request stored first, then fanned out to every channel
+export function relay(c) {
+  const p = c.palette || { bg: "#0f172a", card: "#1e293b", ink: "#f8fafc", mute: "#94a3b8", line: "#334155", a: "#6366f1", ok: "#10b981", warn: "#f59e0b" };
+  const outs = c.outputs || [["📧", "Email to the owner"], ["💬", "Text to the owner"], ["📋", "Into the CRM"]];
+  return svg(`${c.title}: ${c.tagline}`, `${fontFace("spacegrotesk", "inter", "plexmono")}
+.sg{font-family:spacegrotesk,"Segoe UI",sans-serif}.sans{font-family:inter,"Segoe UI",sans-serif}.mono{font-family:plexmono,Consolas,monospace}
+.pkt{animation:pkt 6s ease-in-out infinite}@keyframes pkt{0%{transform:translateX(0);opacity:0}8%{opacity:1}35%{transform:translateX(250px);opacity:1}40%,100%{transform:translateX(250px);opacity:0}}
+.fan{stroke-dasharray:220;animation:fan 6s ease-in-out infinite backwards}@keyframes fan{0%,40%{stroke-dashoffset:220}60%,92%{stroke-dashoffset:0}100%{stroke-dashoffset:220}}
+.ok{animation:ok 6s steps(1) infinite backwards}@keyframes ok{0%,60%{opacity:0}61%,94%{opacity:1}95%,100%{opacity:0}}
+.lock{animation:lock 6s ease-out infinite}@keyframes lock{0%,34%{opacity:.4}38%,92%{opacity:1}}`,
+  `<rect width="${W}" height="${H}" fill="${p.bg}"/>
+<text x="60" y="76" class="mono" font-size="13" letter-spacing="3" fill="${p.ok}">${esc(c.eyebrow || "")}</text>
+<text x="56" y="148" class="sg" font-size="56" letter-spacing="-1.5" fill="${p.ink}">${esc(c.title)}</text>
+<text x="60" y="190" class="sans" font-size="19" fill="${p.mute}">${esc(c.tagline)}</text>
+<rect x="60" y="232" width="260" height="140" rx="14" fill="${p.card}" stroke="${p.line}"/>
+<text x="80" y="262" class="sans" font-size="14" font-weight="600" fill="${p.ink}">${esc(c.formTitle || "Request an estimate")}</text>
+<rect x="80" y="276" width="220" height="22" rx="6" fill="${p.bg}"/><rect x="80" y="306" width="220" height="22" rx="6" fill="${p.bg}"/>
+<rect x="80" y="338" width="100" height="24" rx="12" fill="${p.a}"/><text x="130" y="355" text-anchor="middle" class="sans" font-size="12" fill="#fff">Send</text>
+<g class="pkt"><circle cx="340" cy="302" r="8" fill="${p.a}"/></g>
+<rect x="600" y="232" width="200" height="140" rx="14" fill="${p.card}" stroke="${p.ok}" stroke-opacity=".6"/>
+<g class="lock"><rect x="682" y="266" width="36" height="30" rx="6" fill="${p.ok}"/><path d="M688 266v-8a12 12 0 0 1 24 0v8" fill="none" stroke="${p.ok}" stroke-width="4"/></g>
+<text x="700" y="326" text-anchor="middle" class="sans" font-size="14" font-weight="600" fill="${p.ink}">${esc(c.storeTitle || "Saved first")}</text>
+<text x="700" y="348" text-anchor="middle" class="sans" font-size="12" fill="${p.mute}">${esc(c.storeSub || "nothing is ever lost")}</text>
+${outs.map(([ic, t], i) => { const y = 92 + i * 104; return `<path class="fan" d="M800 302 C 870 302, 870 ${y + 32}, 920 ${y + 32}" fill="none" stroke="${p.ok}" stroke-width="2"/>
+<rect x="920" y="${y}" width="320" height="64" rx="12" fill="${p.card}" stroke="${p.line}"/><text x="940" y="${y + 40}" class="sans" font-size="20">${ic}</text><text x="972" y="${y + 38}" class="sans" font-size="14" fill="${p.ink}">${esc(t)}</text>
+<g class="ok"><circle cx="1216" cy="${y + 32}" r="11" fill="${p.ok}"/><path d="M1210 ${y + 32}l4 4 8-8" stroke="#fff" stroke-width="2.5" fill="none"/></g>`; }).join("")}
+<text x="920" y="${92 + outs.length * 104 + 2}" class="mono" font-size="12" fill="${p.warn}">${esc(c.retry || "↻ retries until delivered")}</text>`);
+}
+
+// ---------------------------------------------------------------- drafting: a navy design sheet with nine agent nodes being drawn, stamped "in design"
+export function drafting(c) {
+  const p = c.palette || { bg: "#0b1d33", line: "#2b4a6f", ink: "#e0f2fe", mute: "#7dd3fc", accent: "#00d4ff", stamp: "#f43f5e" };
+  const agents = c.agents || ["Voice", "Memory", "Planner", "Coder", "Browser", "Vision", "Mail", "Calendar", "Guard"];
+  const cx = 960, cy = 210;
+  const nodes = agents.map((a, i) => { const ang = (i / agents.length) * Math.PI * 2 - Math.PI / 2, x = cx + 150 * Math.cos(ang), y = cy + 150 * Math.sin(ang); return `<line class="ln" style="animation-delay:${(i * 0.3).toFixed(1)}s" x1="${cx}" y1="${cy}" x2="${x.toFixed(1)}" y2="${y.toFixed(1)}" stroke="${p.mute}" stroke-opacity=".5" stroke-dasharray="4 4"/><g class="nd" style="animation-delay:${(i * 0.3).toFixed(1)}s"><circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="26" fill="${p.bg}" stroke="${p.accent}"/><text x="${x.toFixed(1)}" y="${(y + 4).toFixed(1)}" text-anchor="middle" class="mono" font-size="10" fill="${p.ink}">${esc(a)}</text></g>`; }).join("");
+  return svg(`${c.title}: ${c.tagline}`, `${fontFace("orbitron", "plexmono", "inter")}
+.or{font-family:orbitron,"Segoe UI",sans-serif}.mono{font-family:plexmono,Consolas,monospace}.sans{font-family:inter,"Segoe UI",sans-serif}
+.nd{animation:nd 8s ease-out infinite backwards}@keyframes nd{0%{opacity:0}6%,92%{opacity:1}100%{opacity:0}}
+.ln{animation:nd 8s ease-out infinite backwards}
+.stmp{animation:stmp 8s ease-out infinite backwards}@keyframes stmp{0%,40%{opacity:0;transform:scale(1.4)}46%,92%{opacity:1;transform:none}100%{opacity:0}}`,
+  `<rect width="${W}" height="${H}" fill="${p.bg}"/><rect width="${W}" height="${H}" fill="url(#bp1)"/><rect width="${W}" height="${H}" fill="url(#bp2)"/>
+<rect x="20" y="20" width="${W - 40}" height="${H - 40}" fill="none" stroke="${p.line}"/>
+<text x="60" y="76" class="mono" font-size="13" letter-spacing="3" fill="${p.mute}">${esc(c.eyebrow || "")}</text>
+<text x="56" y="160" class="or" font-size="64" letter-spacing="4" fill="${p.ink}">${esc(c.title)}</text>
+<text x="60" y="204" class="sans" font-size="19" fill="${p.mute}">${esc(c.tagline)}</text>
+<text x="60" y="268" class="mono" font-size="14" fill="${p.ink}">${esc(c.pointer || "")}</text>
+<rect x="60" y="${H - 78}" width="260" height="38" fill="none" stroke="${p.line}"/><text x="72" y="${H - 54}" class="mono" font-size="11" fill="${p.mute}">${esc(c.sheet || "SHEET 1 OF 1 · REV 0 · DRAFT")}</text>
+${nodes}
+<circle cx="${cx}" cy="${cy}" r="40" fill="${p.bg}" stroke="${p.accent}" stroke-width="2"/><text x="${cx}" y="${cy + 5}" text-anchor="middle" class="or" font-size="13" fill="${p.accent}">${esc(c.core || "CORE")}</text>
+<g class="stmp" style="transform-box:fill-box;transform-origin:center"><g transform="translate(520 300) rotate(-6)"><rect x="-110" y="-24" width="220" height="48" rx="6" fill="none" stroke="${p.stamp}" stroke-width="3"/><text y="9" text-anchor="middle" class="or" font-size="20" letter-spacing="4" fill="${p.stamp}">${esc(c.stampText || "IN DESIGN")}</text></g></g>`,
+  `<pattern id="bp1" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M20 0H0V20" fill="none" stroke="${p.ink}" stroke-opacity=".05"/></pattern>
+<pattern id="bp2" width="100" height="100" patternUnits="userSpaceOnUse"><path d="M100 0H0V100" fill="none" stroke="${p.ink}" stroke-opacity=".1"/></pattern>`);
+}
+
+// ---------------------------------------------------------------- tape: black, one acid accent, hazard tape across an outlined wordmark (early builds)
+export function tape(c) {
+  const A = c.accent || "#B7FF4A";
+  return svg(`${c.title}: ${c.tagline}`, `${fontFace("bebas", "plexmono", "inter")}
+.bb{font-family:bebas,Impact,sans-serif}.mono{font-family:plexmono,Consolas,monospace}.sans{font-family:inter,"Segoe UI",sans-serif}
+.slide{animation:slide 4s linear infinite}@keyframes slide{to{transform:translateX(-80px)}}
+.blink{animation:blink 1.2s steps(1) infinite}@keyframes blink{50%{opacity:0}}`,
+  `<rect width="${W}" height="${H}" fill="#0a0a0a"/>
+<text x="40" y="300" class="bb" font-size="300" letter-spacing="8" fill="none" stroke="${A}" stroke-opacity=".35" stroke-width="2">${esc(c.word || c.title)}</text>
+<g transform="rotate(-6 640 210)"><rect x="-40" y="176" width="1400" height="64" fill="${A}"/>
+<g class="slide">${Array.from({ length: 22 }, (_, i) => `<path d="M${-40 + i * 80} 176h40l-40 64h-40z" fill="#0a0a0a"/>`).join("")}</g>
+<rect x="420" y="186" width="440" height="44" fill="#0a0a0a"/><text x="640" y="218" text-anchor="middle" class="bb" font-size="34" letter-spacing="6" fill="${A}">${esc(c.tapeText || "EARLY BUILD · NOT THE APP")}</text></g>
+<text x="60" y="80" class="mono" font-size="13" letter-spacing="3" fill="${A}">${esc(c.eyebrow || "")}</text>
+<text x="60" y="352" class="sans" font-size="20" fill="#d4d4d4">${esc(c.tagline)}</text>
+<text x="60" y="384" class="mono" font-size="14" fill="${A}"><tspan class="blink">▸</tspan> ${esc(c.pointer || "")}</text>`);
+}
+
 function baseDivider(c) {
   const col = c.divider || c.a;
   if (c.flatDivider || c.theme === "agency" || c.theme === "mono") return `<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="10" viewBox="0 0 1280 10"><rect x="0" y="4" width="1280" height="2" fill="${"#737373"}"/></svg>\n`;
@@ -378,7 +637,7 @@ function baseDivider(c) {
 
 // Generic, public themes. Project-specific themes live in your data folder (data/themes.mjs) and are
 // merged on top, so a theme there with the same name wins.
-const BASE = { mono: agency, fieldcrm, indigo, hud, island, godcut, aether, ledger, forge };
+const BASE = { mono: agency, fieldcrm, indigo, hud, island, godcut, aether, ledger, forge, blueprint, heartbeat, reactor, pocket, digest, popup, pipeline, relay, drafting, tape };
 let custom = {};
 try {
   const { DATA } = await import("./data.mjs");

@@ -65,6 +65,26 @@
   </tr>
   <tr>
     <td width="50%"><img src="examples/banners/forge.svg" alt="forge theme"><br><sub><b>forge</b> · markdown on the left builds a README on the right</sub></td>
+    <td width="50%"><img src="examples/banners/blueprint.svg" alt="blueprint theme"><br><sub><b>blueprint</b> · light product blueprint and a wireframe that draws itself</sub></td>
+  </tr>
+  <tr>
+    <td width="50%"><img src="examples/banners/heartbeat.svg" alt="heartbeat theme"><br><sub><b>heartbeat</b> · report header and a weekly commit pulse</sub></td>
+    <td width="50%"><img src="examples/banners/reactor.svg" alt="reactor theme"><br><sub><b>reactor</b> · dark HUD with arc-reactor rings and a voice meter</sub></td>
+  </tr>
+  <tr>
+    <td width="50%"><img src="examples/banners/pocket.svg" alt="pocket theme"><br><sub><b>pocket</b> · a phone with chat bubbles and a pulsing mic</sub></td>
+    <td width="50%"><img src="examples/banners/digest.svg" alt="digest theme"><br><sub><b>digest</b> · a clock and two summary emails landing</sub></td>
+  </tr>
+  <tr>
+    <td width="50%"><img src="examples/banners/popup.svg" alt="popup theme"><br><sub><b>popup</b> · a browser and an extension popup filling a sheet</sub></td>
+    <td width="50%"><img src="examples/banners/pipeline.svg" alt="pipeline theme"><br><sub><b>pipeline</b> · a dark deal board where one deal reaches Closed</sub></td>
+  </tr>
+  <tr>
+    <td width="50%"><img src="examples/banners/relay.svg" alt="relay theme"><br><sub><b>relay</b> · a request saved first, then fanned out</sub></td>
+    <td width="50%"><img src="examples/banners/drafting.svg" alt="drafting theme"><br><sub><b>drafting</b> · a design sheet with agent nodes and an IN DESIGN stamp</sub></td>
+  </tr>
+  <tr>
+    <td width="50%"><img src="examples/banners/tape.svg" alt="tape theme"><br><sub><b>tape</b> · hazard tape across an outlined wordmark</sub></td>
     <td width="50%"></td>
   </tr>
 </table>
