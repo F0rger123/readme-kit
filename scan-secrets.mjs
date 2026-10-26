@@ -6,6 +6,7 @@ import path from "node:path";
 const root = process.argv[2];
 const RULES = [
   ["google-api-key", /AIza[0-9A-Za-z_-]{35}/g],
+  ["google-oauth-secret", /GOCSPX-[A-Za-z0-9_-]{20,}/g],
   ["openai-key", /sk-(?:proj-)?[A-Za-z0-9_-]{20,}/g],
   ["anthropic-key", /sk-ant-[A-Za-z0-9_-]{20,}/g],
   ["openrouter-key", /sk-or-v1-[a-f0-9]{40,}/g],
