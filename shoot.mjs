@@ -1,7 +1,9 @@
 // Captures README screenshots with Playwright + the system Edge browser.
 // Usage: node shoot.mjs <playwright-core dir> <jobs.json> [onlyName...]
 // Job: { name, url, out, width, height, scale, wait, selector, labelText, colorScheme, eval, fullPage,
-//        supabaseSession (cookie name), supabaseLocal (localStorage key), localStorage, clip, debug }
+//        supabaseSession (cookie name), supabaseLocal (localStorage key), localStorage, clip, debug,
+//        waitUntil ("networkidle" default; use "load" for apps that keep connections open),
+//        motion (true = let CSS animations run, e.g. to preview an animated banner mid-loop) }
 import fs from "node:fs";
 import path from "node:path";
 import { createRequire } from "node:module";
@@ -17,7 +19,7 @@ for (const j of jobs) {
     viewport: { width: j.width || 1440, height: j.height || 900 },
     deviceScaleFactor: j.scale || 2,
     colorScheme: j.colorScheme || "light",
-    reducedMotion: "reduce",
+    reducedMotion: j.motion ? "no-preference" : "reduce",
   });
   if (j.supabaseSession || j.supabaseLocal) {
     // Fake signed-in session for the local mock Supabase (mock-supabase.mjs); never a real account
@@ -39,10 +41,10 @@ for (const j of jobs) {
   const page = await ctx.newPage();
   page.on("pageerror", (e) => j.debug && console.log("  pageerror:", e.message.slice(0, 160)));
   try {
-    await page.goto(j.url, { waitUntil: "networkidle", timeout: 90_000 });
+    await page.goto(j.url, { waitUntil: j.waitUntil || "networkidle", timeout: 90_000 });
     if (j.localStorage) {
       await page.evaluate((kv) => { for (const [k, v] of Object.entries(kv)) localStorage.setItem(k, v); }, j.localStorage);
-      await page.reload({ waitUntil: "networkidle" });
+      await page.reload({ waitUntil: j.waitUntil || "networkidle" });
     }
     // Hide dev-only overlays (Next.js indicator, Vite error overlay) from screenshots
     await page.addStyleTag({ content: "nextjs-portal,vite-error-overlay{display:none!important}" }).catch(() => {});

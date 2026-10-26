@@ -1,12 +1,12 @@
 <p align="center">
-  <img src=".github/assets/banner.svg" alt="README-KIT: READMEs that look like the app. Guides any AI can follow." width="100%">
+  <img src=".github/assets/banner.svg" alt="readme-kit: READMEs that look like your app." width="100%">
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/status-public-0891b2?style=for-the-badge" alt="Public">
-  <img src="https://img.shields.io/badge/license-MIT-0891b2?style=for-the-badge" alt="License">
-  <img src="https://img.shields.io/github/last-commit/F0rger123/readme-kit?style=for-the-badge&color=0891b2" alt="Last commit">
-  <img src="https://img.shields.io/github/repo-size/F0rger123/readme-kit?style=for-the-badge&color=0891b2" alt="Repo size">
+  <img src="https://img.shields.io/badge/status-public-3fb950?style=for-the-badge" alt="Public">
+  <img src="https://img.shields.io/badge/license-MIT-3fb950?style=for-the-badge" alt="License">
+  <img src="https://img.shields.io/github/last-commit/F0rger123/readme-kit?style=for-the-badge&color=3fb950" alt="Last commit">
+  <img src="https://img.shields.io/github/repo-size/F0rger123/readme-kit?style=for-the-badge&color=3fb950" alt="Repo size">
 </p>
 <p align="center">
   <img src="https://img.shields.io/badge/Node.js-0d1117?style=flat-square&logo=nodedotjs&logoColor=white" alt="Node.js">
@@ -59,14 +59,22 @@
     <td width="50%"><img src="examples/banners/island.svg" alt="island theme"><br><sub><b>island</b> · a morphing status pill</sub></td>
     <td width="50%"><img src="examples/banners/godcut.svg" alt="godcut theme"><br><sub><b>godcut</b> · video timeline</sub></td>
   </tr>
+  <tr>
+    <td width="50%"><img src="examples/banners/aether.svg" alt="aether theme"><br><sub><b>aether</b> · near-black IDE, one hot accent, a typing assistant</sub></td>
+    <td width="50%"><img src="examples/banners/ledger.svg" alt="ledger theme"><br><sub><b>ledger</b> · warm paper and an approval inbox that stamps itself</sub></td>
+  </tr>
+  <tr>
+    <td width="50%"><img src="examples/banners/forge.svg" alt="forge theme"><br><sub><b>forge</b> · markdown on the left builds a README on the right</sub></td>
+    <td width="50%"></td>
+  </tr>
 </table>
 
-Repos without a theme get a generic animated banner. Add your own themes in your data folder (`data/themes.mjs`); they're merged over these.
+Repos without a theme get a generic animated banner; give every app its own theme so no two READMEs look alike. Add your own themes in your data folder (`data/themes.mjs`); they're merged over these.
 
 ## 🔁 How it works
 
 ```mermaid
-%%{init: {'theme':'base','themeVariables':{'primaryColor':'#0a0f16','primaryTextColor':'#e6f6fa','primaryBorderColor':'#22d3ee','lineColor':'#7b8a96','secondaryColor':'#111822','tertiaryColor':'#0a0f16','clusterBkg':'transparent','clusterBorder':'#22d3ee','noteBkgColor':'#111822','noteTextColor':'#e6f6fa','actorBkg':'#0a0f16','actorTextColor':'#e6f6fa','actorBorder':'#22d3ee','signalColor':'#7b8a96','signalTextColor':'#7b8a96','labelBoxBkgColor':'#0a0f16','fontFamily':'inherit'}}}%%
+%%{init: {'theme':'base','themeVariables':{'primaryColor':'#161b22','primaryTextColor':'#e6edf3','primaryBorderColor':'#3fb950','lineColor':'#8b949e','secondaryColor':'#0d1117','tertiaryColor':'#21262d','clusterBkg':'transparent','clusterBorder':'#3fb950','noteBkgColor':'#0d1117','noteTextColor':'#e6edf3','actorBkg':'#161b22','actorTextColor':'#e6edf3','actorBorder':'#3fb950','signalColor':'#8b949e','signalTextColor':'#8b949e','labelBoxBkgColor':'#161b22','fontFamily':'inherit'}}}%%
 flowchart LR
     A["Your repos<br/>on GitHub"] --> B["Kit reads what<br/>each one does"]
     D[("Your private notes:<br/>themes, guides, READMEs")] --> B
@@ -80,7 +88,7 @@ flowchart LR
 ## 🧱 Two repos, on purpose
 
 ```mermaid
-%%{init: {'theme':'base','themeVariables':{'primaryColor':'#0a0f16','primaryTextColor':'#e6f6fa','primaryBorderColor':'#22d3ee','lineColor':'#7b8a96','secondaryColor':'#111822','tertiaryColor':'#0a0f16','clusterBkg':'transparent','clusterBorder':'#22d3ee','noteBkgColor':'#111822','noteTextColor':'#e6f6fa','actorBkg':'#0a0f16','actorTextColor':'#e6f6fa','actorBorder':'#22d3ee','signalColor':'#7b8a96','signalTextColor':'#7b8a96','labelBoxBkgColor':'#0a0f16','fontFamily':'inherit'}}}%%
+%%{init: {'theme':'base','themeVariables':{'primaryColor':'#161b22','primaryTextColor':'#e6edf3','primaryBorderColor':'#3fb950','lineColor':'#8b949e','secondaryColor':'#0d1117','tertiaryColor':'#21262d','clusterBkg':'transparent','clusterBorder':'#3fb950','noteBkgColor':'#0d1117','noteTextColor':'#e6edf3','actorBkg':'#161b22','actorTextColor':'#e6edf3','actorBorder':'#3fb950','signalColor':'#8b949e','signalTextColor':'#8b949e','labelBoxBkgColor':'#161b22','fontFamily':'inherit'}}}%%
 flowchart LR
     Kit["readme-kit<br/>public tools"] --> Run["A build run"]
     Data["your-data repo<br/>private notes"] --> Run

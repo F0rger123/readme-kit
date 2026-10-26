@@ -16,6 +16,9 @@ const EXAMPLES = {
   hud: { title: "TRACKDAY", code: "TD 2.0", tagline: "Lap times, live, from your phone.", kicker: "GPS · SENSORS · LEADERBOARDS", gauge: "142", gaugeLabel: "KM/H · CIRCUIT", status: "LIVE", nav: ["HOME", "GARAGE", "MAP", "RACE", "CREW", "STATS"] },
   island: { title: "Notch Hub", tagline: "A tiny status pill for your desktop." },
   godcut: { title: "Clip Studio", tagline: "Raw footage in, finished reels out.", eyebrow: "AI VIDEO EDITING", code: "CS-1" },
+  aether: { title: "NIGHTSHIFT", wordmark: ["NIGHT", "SHIFT"], logo: "N", code: "AGENT 1.0", tagline: "An IDE with an assistant that ships while you sleep.", chips: ["Editor", "Agent", "Deploy"], file: "agent.ts", status: "AGENT · ONLINE" },
+  ledger: { title: "Studio Back Office", eyebrow: "BACK OFFICE · AUTOPILOT", tagline: "Bookings, invoices and posts. You approve.", footnote: "BOOKINGS · INVOICES · SOCIAL" },
+  forge: { title: "doc-press", eyebrow: "DOCS TOOLING", tagline: "Docs that look like your product.", subline: "Write markdown once; get a styled site.", miniTitle: "your-docs" },
 };
 for (const [theme, c] of Object.entries(EXAMPLES)) {
   const cfg = { theme, a: "#22d3ee", b: "#a855f7", chips: [], ...c };

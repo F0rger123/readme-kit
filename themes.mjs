@@ -9,7 +9,7 @@ const FILES = {
   geist: "geist-800.woff2", geistmono: "geist-mono-500.woff2", schibsted: "schibsted-800.woff2", plexmono: "plexmono-600.woff2",
   bebas: "bebas-400.woff2", cormorant: "cormorant-700.woff2", lora: "lora-500.woff2", fraunces: "fraunces-700.woff2",
   inter: "inter-500.woff2", inter900: "inter-900.woff2", inter900i: "inter-900i.woff2", spacegrotesk: "spacegrotesk-700.woff2",
-  jakarta: "jakarta-600.woff2", jbmono: "jbmono-600.woff2",
+  jakarta: "jakarta-600.woff2", jbmono: "jbmono-600.woff2", bodoni: "bodoni-800i.woff2",
 };
 export const fontFace = (...names) => names.map((n) => {
   const b64 = fs.readFileSync(path.join(FONT_DIR, FILES[n])).toString("base64");
@@ -238,6 +238,138 @@ ${tracks}
 <pattern id="grid" width="64" height="64" patternUnits="userSpaceOnUse"><path d="M64 0H0V64" fill="none" stroke="#ffffff" stroke-opacity=".035"/></pattern>`);
 }
 
+// ---------------------------------------------------------------- aether: near-black IDE, one hot yellow, Bodoni italic, a typing assistant
+export function aether(c) {
+  const Y = c.accent || "#eab308";
+  const code = c.codeLines || [
+    [["k", "const "], ["t", "app"], ["p", " = "], ["k", "await "], ["f", "aether"], ["p", ".build({"]],
+    [["t", "  idea"], ["p", ": "], ["s", "\"CRM for a cleaning crew\""], ["p", ","]],
+    [["t", "  ship"], ["p", ": ["], ["s", "\"web\""], ["p", ", "], ["s", "\"desktop\""], ["p", ", "], ["s", "\"android\""], ["p", "],"]],
+    [["p", "});"]],
+    [["c", "// plan ready · 14 files · tests passing"]],
+  ];
+  const col = { k: Y, t: "#e4e4e7", p: "#71717a", f: "#fde68a", s: "#a1a1aa", c: "#52525b" };
+  const lines = code.map((ln, i) => {
+    const y = 156 + i * 30;
+    const spans = ln.map(([k, s]) => `<tspan fill="${col[k]}">${esc(s)}</tspan>`).join("");
+    return `<g clip-path="url(#ln${i})"><text x="738" y="${y}" class="mono" font-size="15" xml:space="preserve">${spans}</text></g>
+<text x="712" y="${y}" class="mono" font-size="13" fill="#3f3f46" text-anchor="end">${i + 1}</text>`;
+  }).join("");
+  const clips = code.map((_, i) => `<clipPath id="ln${i}"><rect class="type t${i}" x="730" y="${136 + i * 30}" width="460" height="30"/></clipPath>`).join("");
+  const typeCss = code.map((_, i) => `.t${i}{animation:type 9s steps(28) infinite backwards;animation-delay:${(i * 0.9).toFixed(1)}s}`).join("");
+  const chips = (c.chips || []).map((ch, i, a) => {
+    const x = 60 + a.slice(0, i).reduce((s, t) => s + t.length * 8.4 + 40, 0);
+    return `<rect x="${x}" y="292" width="${ch.length * 8.4 + 28}" height="32" rx="16" fill="none" stroke="${Y}" stroke-opacity=".45"/><text x="${x + 14}" y="313" class="jk" font-size="14" fill="#e4e4e7">${esc(ch)}</text>`;
+  }).join("");
+  const [w1, w2] = c.wordmark || [c.title.slice(0, 3), c.title.slice(3)];
+  return svg(`${c.title}: ${c.tagline}`, `${fontFace("bodoni", "jakarta", "jbmono")}
+.bd{font-family:bodoni,Georgia,serif;font-style:italic}.jk{font-family:jakarta,"Segoe UI",sans-serif}.mono{font-family:jbmono,Consolas,monospace}
+.type{transform-box:fill-box;transform-origin:left}
+@keyframes type{0%{transform:scaleX(0)}12%,88%{transform:scaleX(1)}96%,100%{transform:scaleX(0)}}${typeCss}
+.caret{animation:blink 1s steps(1) infinite}@keyframes blink{50%{opacity:0}}
+.sweep{animation:sweep 6s ease-in-out infinite}@keyframes sweep{0%{transform:translateX(-260px);opacity:0}20%{opacity:.9}60%,100%{transform:translateX(1280px);opacity:0}}
+.pulse{animation:pulse 2s ease-in-out infinite}@keyframes pulse{50%{opacity:.35}}`,
+  `<rect width="${W}" height="${H}" fill="#050507"/>
+<rect width="${W}" height="${H}" fill="url(#glow)"/>
+<rect width="${W}" height="${H}" fill="url(#dots)"/>
+<rect x="60" y="48" width="44" height="44" rx="11" fill="${Y}"/><text x="82" y="78" text-anchor="middle" class="jk" font-size="20" font-weight="700" fill="#050507">${esc(c.logo || c.title[0])}</text>
+<text x="118" y="77" class="mono" font-size="13" letter-spacing="4" fill="#a1a1aa">${esc(c.code || "")}</text>
+<text x="56" y="196" class="bd" font-size="104" letter-spacing="-2"><tspan fill="#fafafa">${esc(w1)}</tspan><tspan fill="${Y}">${esc(w2)}</tspan></text>
+<text x="60" y="248" class="jk" font-size="20" fill="#a1a1aa">${esc(c.tagline)}</text>
+${chips}
+<rect x="60" y="352" width="${c.ctaW || 196}" height="2" fill="${Y}"/><text x="60" y="380" class="mono" font-size="13" letter-spacing="2" fill="${Y}">${esc(c.cta || "OPEN THE WORKSPACE →")}</text>
+<rect x="676" y="70" width="548" height="300" rx="14" fill="#0b0c10" stroke="#27272a"/>
+<path d="M676 84a14 14 0 0 1 14-14h520a14 14 0 0 1 14 14v22H676z" fill="#121214"/>
+<circle cx="698" cy="88" r="5" fill="#3f3f46"/><circle cx="716" cy="88" r="5" fill="#3f3f46"/><circle cx="734" cy="88" r="5" fill="${Y}"/>
+<rect x="756" y="76" width="112" height="30" fill="#0b0c10"/><rect x="756" y="104" width="112" height="2" fill="${Y}"/>
+<text x="770" y="95" class="mono" font-size="12" fill="#e4e4e7">${esc(c.file || "aether.ts")}</text>
+${lines}
+<rect class="caret" x="738" y="${136 + code.length * 30 + 8}" width="9" height="18" fill="${Y}"/>
+<path d="M676 340h548v16a14 14 0 0 1-14 14H690a14 14 0 0 1-14-14z" fill="#121214"/>
+<circle class="pulse" cx="696" cy="355" r="4" fill="${Y}"/><text x="708" y="360" class="mono" font-size="12" fill="#a1a1aa">${esc(c.status || "AETHER · ONLINE")}</text>
+<text x="1208" y="360" text-anchor="end" class="mono" font-size="12" fill="#52525b">${esc(c.statusRight || "UTF-8 · TS")}</text>
+<rect class="sweep" x="0" y="${H - 3}" width="260" height="3" fill="url(#sw)"/>`,
+  `<radialGradient id="glow" cx=".1" cy=".05" r=".75"><stop offset="0" stop-color="${Y}" stop-opacity=".16"/><stop offset="1" stop-color="${Y}" stop-opacity="0"/></radialGradient>
+<linearGradient id="sw" x1="0" x2="1"><stop offset="0" stop-color="${Y}" stop-opacity="0"/><stop offset=".5" stop-color="${Y}"/><stop offset="1" stop-color="${Y}" stop-opacity="0"/></linearGradient>
+<pattern id="dots" width="28" height="28" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1" fill="#ffffff" fill-opacity=".05"/></pattern>${clips}`);
+}
+
+// ---------------------------------------------------------------- ledger: warm paper, serif, an approval inbox that stamps itself
+export function ledger(c) {
+  const p = c.palette || { paper: "#f5f1ea", card: "#fffdf9", ink: "#1f1b16", mute: "#6f665c", line: "#e4dccf", accent: "#c96442", ok: "#3f7d4f" };
+  const rows = c.rows || [["CRM", "Text 12 customers a follow-up"], ["ADS", "Move $20/day to the winning ad"], ["SEO", "Rewrite 3 page titles"], ["VIDEO", "Post Tuesday's reel at 6pm"]];
+  const rowEls = rows.map(([tag, text], i) => {
+    const y = 104 + i * 64, d = (i * 1.4).toFixed(1);
+    return `<g><rect x="704" y="${y}" width="508" height="52" rx="10" fill="${p.card}" stroke="${p.line}"/>
+<rect x="720" y="${y + 15}" width="${tag.length * 8 + 18}" height="22" rx="11" fill="${p.paper}" stroke="${p.line}"/><text x="729" y="${y + 30}" class="mono" font-size="11" letter-spacing="1.5" fill="${p.mute}">${esc(tag)}</text>
+<text x="${740 + tag.length * 8 + 10}" y="${y + 31}" class="sans" font-size="15" fill="${p.ink}">${esc(text)}</text>
+<g class="ask" style="animation-delay:${d}s"><rect x="1112" y="${y + 12}" width="86" height="28" rx="14" fill="${p.ink}"/><text x="1155" y="${y + 31}" text-anchor="middle" class="sans" font-size="13" fill="${p.paper}">Approve</text></g>
+<g class="stamp" style="animation-delay:${d}s"><g transform="translate(1155 ${y + 26}) rotate(-8)"><rect x="-50" y="-14" width="100" height="28" rx="4" fill="${p.card}" stroke="${p.ok}" stroke-width="2.5"/><text y="5" text-anchor="middle" class="mono" font-size="13" letter-spacing="2" fill="${p.ok}">APPROVED</text></g></g></g>`;
+  }).join("");
+  const words = c.title.split(" ");
+  const last = words.pop();
+  return svg(`${c.title}: ${c.tagline}`, `${fontFace("fraunces", "inter", "plexmono")}
+.serif{font-family:fraunces,Georgia,serif}.sans{font-family:inter,"Segoe UI",sans-serif}.mono{font-family:plexmono,Consolas,monospace}
+.ask{opacity:0;animation:ask 7s ease-in-out infinite backwards}@keyframes ask{0%,12%{opacity:1}16%,92%{opacity:0}100%{opacity:1}}
+.stamp{animation:stamp 7s ease-out infinite backwards}
+@keyframes stamp{0%,12%{opacity:0}16%,88%{opacity:1}94%,100%{opacity:0}}
+.you{animation:you 3.5s ease-in-out infinite}@keyframes you{50%{opacity:.55}}`,
+  `<rect width="${W}" height="${H}" fill="${p.paper}"/>
+<rect width="${W}" height="${H}" fill="url(#rule)"/>
+<text x="60" y="76" class="mono" font-size="13" letter-spacing="3" fill="${p.accent}">${esc(c.eyebrow || "")}</text>
+<text x="56" y="168" class="serif" font-size="74" letter-spacing="-1.5" fill="${p.ink}">${esc(words.join(" "))}</text>
+<text x="56" y="246" class="serif" font-size="74" letter-spacing="-1.5" fill="${p.accent}">${esc(last)}</text>
+<text x="60" y="294" class="sans" font-size="20" fill="${p.mute}">${esc(c.tagline)}</text>
+<line x1="60" y1="330" x2="560" y2="330" stroke="${p.line}"/>
+<text x="60" y="362" class="mono" font-size="13" letter-spacing="1.5" fill="${p.mute}">${esc(c.footnote || "")}</text>
+<rect x="684" y="40" width="548" height="352" rx="18" fill="${p.paper}" stroke="${p.line}"/>
+<text x="704" y="80" class="serif" font-size="22" fill="${p.ink}">${esc(c.inboxTitle || "Waiting for your yes")}</text>
+<circle class="you" cx="1196" cy="73" r="6" fill="${p.accent}"/><text x="1184" y="78" text-anchor="end" class="mono" font-size="12" fill="${p.mute}">${rows.length} TODAY</text>
+${rowEls}`,
+  `<pattern id="rule" width="${W}" height="32" patternUnits="userSpaceOnUse"><line x1="0" y1="31.5" x2="${W}" y2="31.5" stroke="${p.ink}" stroke-opacity=".035"/></pattern>`);
+}
+
+// ---------------------------------------------------------------- forge: GitHub dark, markdown source on the left builds a README on the right
+export function forge(c) {
+  const g = c.palette || { bg: "#0d1117", panel: "#161b22", line: "#30363d", ink: "#e6edf3", mute: "#8b949e", green: "#3fb950", blue: "#58a6ff", amber: "#d29922" };
+  const src = c.source || ["{{HEADER}}", "## What it does", "| 🎨 | Banner, your colors |", "```mermaid", "flowchart LR", "  A[Repo] --> B[README]", "```", "{{FOOTER}}"];
+  const tint = (s) => (s.startsWith("#") ? g.blue : s.startsWith("{{") ? g.amber : s.startsWith("```") ? g.green : g.mute);
+  const srcEls = src.map((s, i) => `<text x="716" y="${110 + i * 26}" class="mono" font-size="13" fill="${tint(s)}">${esc(s)}</text>`).join("");
+  const built = [
+    `<rect x="962" y="98" width="256" height="58" rx="6" fill="url(#ban)"/><text x="978" y="133" class="hd" font-size="20" fill="#ffffff">${esc(c.miniTitle || "your-app")}</text>`,
+    `<rect x="962" y="166" width="54" height="14" rx="3" fill="${g.green}"/><rect x="1022" y="166" width="54" height="14" rx="3" fill="${g.blue}"/><rect x="1082" y="166" width="42" height="14" rx="3" fill="${g.amber}"/>`,
+    `<rect x="962" y="194" width="150" height="9" rx="4" fill="${g.ink}" fill-opacity=".85"/><rect x="962" y="210" width="256" height="6" rx="3" fill="${g.mute}" fill-opacity=".5"/><rect x="962" y="222" width="210" height="6" rx="3" fill="${g.mute}" fill-opacity=".5"/>`,
+    `<rect x="962" y="242" width="66" height="34" rx="6" fill="none" stroke="${g.blue}"/><path d="M1028 259h22" stroke="${g.mute}"/><rect x="1050" y="242" width="66" height="34" rx="6" fill="none" stroke="${g.green}"/><path d="M1116 259h22" stroke="${g.mute}"/><rect x="1138" y="242" width="80" height="34" rx="6" fill="${g.green}" fill-opacity=".18" stroke="${g.green}"/>`,
+    `<rect x="962" y="292" width="256" height="34" rx="6" fill="none" stroke="${g.line}"/><text x="976" y="314" class="mono" font-size="11" fill="${g.mute}">AI agents: start here →</text>`,
+  ].map((b, i) => `<g class="blk" style="animation-delay:${(0.6 + i * 0.7).toFixed(1)}s">${b}</g>`).join("");
+  const steps = c.steps || ["read", "theme", "shoot", "build", "check", "push"];
+  const stepEls = steps.map((s, i) => {
+    const x = 72 + i * 96;
+    return `${i ? `<line x1="${x - 86}" y1="350" x2="${x - 10}" y2="350" stroke="${g.line}" stroke-width="2"/>` : ""}<circle cx="${x}" cy="350" r="7" fill="${g.bg}" stroke="${g.line}" stroke-width="2"/><circle class="st" style="animation-delay:${(i * 0.8).toFixed(1)}s" cx="${x}" cy="350" r="7" fill="${g.green}"/><text x="${x}" y="380" text-anchor="middle" class="mono" font-size="12" fill="${g.mute}">${esc(s)}</text>`;
+  }).join("");
+  return svg(`${c.title}: ${c.tagline}`, `${fontFace("schibsted", "inter", "plexmono")}
+.hd{font-family:schibsted,"Segoe UI",sans-serif}.sans{font-family:inter,"Segoe UI",sans-serif}.mono{font-family:plexmono,Consolas,monospace}
+.scan{animation:scan 6s linear infinite}@keyframes scan{0%{transform:translateY(0)}80%,100%{transform:translateY(182px)}}
+.blk{animation:blk 6s ease-out infinite backwards}@keyframes blk{0%{opacity:0}8%,85%{opacity:1}95%,100%{opacity:0}}
+.st{animation:st 6s steps(1) infinite backwards}@keyframes st{0%{opacity:0}2%,90%{opacity:1}100%{opacity:0}}
+.arrow{animation:arrow 1.5s ease-in-out infinite}@keyframes arrow{50%{transform:translateX(4px)}}`,
+  `<rect width="${W}" height="${H}" fill="${g.bg}"/>
+<text x="60" y="78" class="mono" font-size="13" letter-spacing="3" fill="${g.green}">${esc(c.eyebrow || "")}</text>
+<text x="56" y="172" class="hd" font-size="84" letter-spacing="-3" fill="${g.ink}">${esc(c.title)}</text>
+<text x="60" y="222" class="sans" font-size="20" fill="${g.ink}" fill-opacity=".8">${esc(c.tagline)}</text>
+<text x="60" y="256" class="sans" font-size="16" fill="${g.mute}">${esc(c.subline || "")}</text>
+${stepEls}
+<rect x="700" y="60" width="536" height="296" rx="12" fill="${g.panel}" stroke="${g.line}"/>
+<line x1="946" y1="60" x2="946" y2="356" stroke="${g.line}"/>
+<text x="716" y="84" class="mono" font-size="11" letter-spacing="1" fill="${g.mute}">readmes/your-app.md</text>
+<text x="962" y="84" class="mono" font-size="11" letter-spacing="1" fill="${g.mute}">README.md</text>
+${srcEls}
+<rect class="scan" x="708" y="94" width="230" height="24" rx="3" fill="${g.blue}" fill-opacity=".12"/>
+<path class="arrow" d="M942 200l8 8-8 8" fill="none" stroke="${g.green}" stroke-width="2"/>
+${built}`,
+  `<linearGradient id="ban" x1="0" x2="1"><stop offset="0" stop-color="${g.blue}"/><stop offset="1" stop-color="${g.green}"/></linearGradient>`);
+}
+
 function baseDivider(c) {
   const col = c.divider || c.a;
   if (c.flatDivider || c.theme === "agency" || c.theme === "mono") return `<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="10" viewBox="0 0 1280 10"><rect x="0" y="4" width="1280" height="2" fill="${"#737373"}"/></svg>\n`;
@@ -246,7 +378,7 @@ function baseDivider(c) {
 
 // Generic, public themes. Project-specific themes live in your data folder (data/themes.mjs) and are
 // merged on top, so a theme there with the same name wins.
-const BASE = { mono: agency, fieldcrm, indigo, hud, island, godcut };
+const BASE = { mono: agency, fieldcrm, indigo, hud, island, godcut, aether, ledger, forge };
 let custom = {};
 try {
   const { DATA } = await import("./data.mjs");
