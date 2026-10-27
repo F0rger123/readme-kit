@@ -3,7 +3,8 @@
 // Job: { name, url, out, width, height, scale, wait, selector, labelText, colorScheme, eval, fullPage,
 //        supabaseSession (cookie name), supabaseLocal (localStorage key), localStorage, clip, debug,
 //        waitUntil ("networkidle" default; use "load" for apps that keep connections open),
-//        motion (true = let CSS animations run, e.g. to preview an animated banner mid-loop) }
+//        motion (true = let CSS animations run, e.g. to preview an animated banner mid-loop),
+//        sessionStorage (key/values set before the app boots) }
 import fs from "node:fs";
 import path from "node:path";
 import { createRequire } from "node:module";
@@ -37,6 +38,10 @@ for (const j of jobs) {
       // Browser-only apps (supabase-js) read it from localStorage, set before the app boots
       await ctx.addInitScript(([k, v]) => localStorage.setItem(k, v), [j.supabaseLocal, JSON.stringify(session)]);
     }
+  }
+  if (j.sessionStorage) {
+    // Apps that keep their sign-in in sessionStorage (local dev tokens only)
+    await ctx.addInitScript((kv) => { for (const [k, v] of Object.entries(kv)) sessionStorage.setItem(k, v); }, j.sessionStorage);
   }
   const page = await ctx.newPage();
   page.on("pageerror", (e) => j.debug && console.log("  pageerror:", e.message.slice(0, 160)));

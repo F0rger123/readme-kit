@@ -9,7 +9,7 @@ const FILES = {
   geist: "geist-800.woff2", geistmono: "geist-mono-500.woff2", schibsted: "schibsted-800.woff2", plexmono: "plexmono-600.woff2",
   bebas: "bebas-400.woff2", cormorant: "cormorant-700.woff2", lora: "lora-500.woff2", fraunces: "fraunces-700.woff2",
   inter: "inter-500.woff2", inter900: "inter-900.woff2", inter900i: "inter-900i.woff2", spacegrotesk: "spacegrotesk-700.woff2",
-  jakarta: "jakarta-600.woff2", jbmono: "jbmono-600.woff2", bodoni: "bodoni-800i.woff2", orbitron: "orbitron-800.woff2", sharetech: "sharetech-400.woff2", dmsans: "dmsans-700.woff2",
+  jakarta: "jakarta-600.woff2", jbmono: "jbmono-600.woff2", bodoni: "bodoni-800i.woff2", orbitron: "orbitron-800.woff2", sharetech: "sharetech-400.woff2", dmsans: "dmsans-700.woff2", archivo: "archivo-800.woff2", archivo5: "archivo-500.woff2",
 };
 export const fontFace = (...names) => names.map((n) => {
   const b64 = fs.readFileSync(path.join(FONT_DIR, FILES[n])).toString("base64");
@@ -629,6 +629,89 @@ export function tape(c) {
 <text x="60" y="384" class="mono" font-size="14" fill="${A}"><tspan class="blink">▸</tspan> ${esc(c.pointer || "")}</text>`);
 }
 
+// ---------------------------------------------------------------- drawingsheet: an engineering drawing sheet; two documents get redlined where they disagree
+const SHEET = {
+  light: { paper: "#eef2f3", panel: "#ffffff", ink: "#14213d", muted: "#5a6577", line: "#c9d3da", blue: "#1f5fad", red: "#c8102e", green: "#2f7d4f", grid: "#1f5fad" },
+  dark: { paper: "#0e1a2b", panel: "#13243a", ink: "#dce8f2", muted: "#94a8bf", line: "#2b4462", blue: "#6aa6ee", red: "#ff6b7d", green: "#62c78e", grid: "#6aa6ee" },
+};
+function sheetFrame(p, w, h) {
+  const zonesX = ["1", "2", "3", "4", "5", "6"].map((z, i) => `<text x="${16 + (i + 0.5) * ((w - 32) / 6)}" y="13" text-anchor="middle" class="m" font-size="9" fill="${p.muted}">${z}</text><text x="${16 + (i + 0.5) * ((w - 32) / 6)}" y="${h - 4}" text-anchor="middle" class="m" font-size="9" fill="${p.muted}">${z}</text>`).join("");
+  const zonesY = ["A", "B", "C"].map((z, i) => `<text x="8" y="${20 + (i + 0.5) * ((h - 40) / 3)}" text-anchor="middle" class="m" font-size="9" fill="${p.muted}">${z}</text><text x="${w - 8}" y="${20 + (i + 0.5) * ((h - 40) / 3)}" text-anchor="middle" class="m" font-size="9" fill="${p.muted}">${z}</text>`).join("");
+  return `<rect width="${w}" height="${h}" fill="${p.paper}"/><rect x="16" y="18" width="${w - 32}" height="${h - 36}" fill="url(#sg)"/>
+<rect x="16" y="18" width="${w - 32}" height="${h - 36}" fill="none" stroke="${p.ink}" stroke-width="2"/>${zonesX}${zonesY}`;
+}
+const sheetDefs = (p) => `<pattern id="sg" width="24" height="24" patternUnits="userSpaceOnUse"><path d="M24 0H0V24" fill="none" stroke="${p.grid}" stroke-opacity=".09"/></pattern>`;
+
+export function drawingsheet(c, { dark } = {}) {
+  const p = SHEET[dark ? "dark" : "light"];
+  const docs = c.docs || [
+    { file: "ALP-DWG-0005.pdf", kind: "Engineering drawing · page 1", line: ["BV-7891 Ball valve  Bronze", "C95800  Rated "], value: "1500 psi", tail: "  Qty 8" },
+    { file: "ALP-INS-0001.pdf", kind: "Inspection report · page 1", line: ["BV-7891 Ball valve hydrostatic", "test at "], value: "600 psi", tail: "  - PASS" },
+  ];
+  const doc = (d, x, y, i) => `<g><rect x="${x}" y="${y}" width="300" height="150" fill="${p.panel}" stroke="${p.ink}" stroke-width="1.5"/>
+<text x="${x + 16}" y="${y + 26}" class="m" font-size="13" fill="${p.blue}">${esc(d.file)}</text>
+<text x="${x + 16}" y="${y + 46}" class="s" font-size="12" fill="${p.muted}">${esc(d.kind)}</text>
+<line x1="${x + 16}" y1="${y + 58}" x2="${x + 284}" y2="${y + 58}" stroke="${p.line}"/>
+<text x="${x + 16}" y="${y + 84}" class="m" font-size="13" fill="${p.ink}" xml:space="preserve">${esc(d.line[0])}</text>
+<text x="${x + 16}" y="${y + 104}" class="m" font-size="13" fill="${p.ink}" xml:space="preserve">${esc(d.line[1])}<tspan fill="${p.red}">${esc(d.value)}</tspan>${esc(d.tail)}</text>
+<g class="ok" style="animation-delay:${(3.4 + i * 0.4).toFixed(1)}s"><rect x="${x + 16}" y="${y + 118}" width="132" height="20" fill="none" stroke="${p.green}"/><text x="${x + 24}" y="${y + 132}" class="s" font-size="11" fill="${p.green}">✓ Verified in source</text></g></g>`;
+  // value positions (monospace ~7.8px per char at 13px)
+  const v1x = 650 + 16 + docs[0].line[1].length * 7.8, v2x = 920 + 16 + docs[1].line[1].length * 7.8;
+  const cloud = (x, y, wch) => { const w = wch * 7.8 + 12; let d = `M${x - 6} ${y - 14}`; const n = Math.max(3, Math.round(w / 14)); for (let k = 0; k < n; k++) d += ` a7 7 0 0 1 ${(w / n).toFixed(1)} 0`; d += ` a7 7 0 0 1 0 20`; for (let k = 0; k < n; k++) d += ` a7 7 0 0 1 ${(-w / n).toFixed(1)} 0`; return d + " a7 7 0 0 1 0 -20"; };
+  const tb = c.titleBlock || [["PROJECT", "VAULT"], ["EVENT", "META GLOBAL AI HACKATHON 2026"], ["DRAWN BY", "LUKE KNIGHT"], ["SHEET", "1 OF 1"], ["REV", "A"]];
+  const tbw = [96, 250, 132, 80, 52];
+  let tx = W - 16 - tbw.reduce((a, b) => a + b, 0);
+  const tbEls = tb.map(([k, v], i) => { const x = tx; tx += tbw[i]; return `<rect x="${x}" y="${H - 70}" width="${tbw[i]}" height="52" fill="${p.panel}" stroke="${p.ink}" stroke-width="1.5"/><text x="${x + 10}" y="${H - 52}" class="m" font-size="9" letter-spacing="1" fill="${p.muted}">${esc(k)}</text><text x="${x + 10}" y="${H - 30}" class="a" font-size="13" fill="${p.ink}">${esc(v)}</text>`; }).join("");
+  return svg(`${c.title}: ${c.tagline}`, `${fontFace("archivo", "archivo5", "plexmono")}
+.a{font-family:archivo,"Segoe UI",sans-serif}.s{font-family:archivo5,"Segoe UI",sans-serif}.m{font-family:plexmono,Consolas,monospace}
+.scan{opacity:0;animation:scan 9s ease-in-out infinite}@keyframes scan{0%{transform:translateY(0);opacity:0}5%{opacity:.9}28%{transform:translateY(150px);opacity:.9}32%,100%{transform:translateY(150px);opacity:0}}
+.cloud{stroke-dasharray:420;animation:cloud 9s ease-out infinite backwards}@keyframes cloud{0%,30%{stroke-dashoffset:420}40%,92%{stroke-dashoffset:0}100%{stroke-dashoffset:420}}
+.tie{stroke-dasharray:6 5;animation:tie 9s steps(1) infinite backwards}@keyframes tie{0%,38%{opacity:0}40%,92%{opacity:1}100%{opacity:0}}
+.ok{animation:ok 9s ease-out infinite backwards}@keyframes ok{0%,36%{opacity:0}40%,92%{opacity:1}100%{opacity:0}}`,
+  `${sheetFrame(p, W, H)}
+<rect x="60" y="56" width="44" height="44" fill="none" stroke="${p.ink}" stroke-width="2"/><circle cx="82" cy="78" r="12" fill="none" stroke="${p.ink}" stroke-width="2"/><path d="M82 62v32M66 78h32" stroke="${p.ink}" stroke-width="2"/>
+<text x="120" y="92" class="a" font-size="40" letter-spacing="10" fill="${p.ink}">${esc(c.title)}</text>
+<text x="60" y="152" class="a" font-size="28" fill="${p.ink}">${esc(c.headline || "Private document intelligence.")}</text>
+<text x="60" y="186" class="a" font-size="28" fill="${p.blue}">${esc(c.headline2 || "Runs on this machine.")}</text>
+${(c.lines || ["Reads every drawing, report and contract with Meta Llama.", "Checks every fact against a quote from the original.", "Redlines the places where documents disagree."]).map((t, i) => `<text x="60" y="${234 + i * 24}" class="s" font-size="16" fill="${p.muted}">${esc(t)}</text>`).join("")}
+${doc(docs[0], 650, 70, 0)}${doc(docs[1], 920, 168, 1)}
+<g class="scan"><rect x="650" y="70" width="570" height="3" fill="${p.blue}" fill-opacity=".7"/></g>
+<path class="cloud" d="${cloud(v1x, 174 - 0, docs[0].value.length)}" transform="translate(0 0)" fill="none" stroke="${p.red}" stroke-width="2"/>
+<path class="cloud" style="animation-delay:.3s" d="${cloud(v2x, 272, docs[1].value.length)}" fill="none" stroke="${p.red}" stroke-width="2"/>
+<g class="tie"><path d="M${v1x + 20} 186 C ${v1x + 10} 240, ${v2x - 70} 268, ${v2x - 10} 268" fill="none" stroke="${p.red}" stroke-width="1.5"/>
+<rect x="${740}" y="236" width="${(c.conflict || "CONFLICT · BV-7891").length * 7.4 + 16}" height="22" fill="${p.red}"/><text x="${748}" y="251" class="m" font-size="12" fill="${p.panel}">${esc(c.conflict || "CONFLICT · BV-7891")}</text></g>
+${tbEls}`,
+  sheetDefs(p));
+}
+
+// ---------------------------------------------------------------- sheetflow: a numbered process drawn as stations on a drawing sheet, with a rule band underneath
+export function sheetflow(c, { dark } = {}) {
+  const p = SHEET[dark ? "dark" : "light"];
+  const steps = c.steps;
+  const h = c.height || 378, n = steps.length, gap = 18, x0 = 40, w = (W - 2 * x0 - gap * (n - 1)) / n;
+  const st = steps.map(([title, body, tag], i) => {
+    const x = x0 + i * (w + gap);
+    const lines = body.map((b, k) => `<text x="${x + 14}" y="${118 + k * 19}" class="s" font-size="13" fill="${p.muted}">${esc(b)}</text>`).join("");
+    return `<g class="st" style="animation-delay:${(i * 0.5).toFixed(1)}s"><rect x="${x}" y="48" width="${w}" height="182" fill="${p.panel}" stroke="${p.ink}" stroke-width="1.5"/>
+<circle cx="${x + 26}" cy="74" r="13" fill="none" stroke="${p.ink}" stroke-width="1.5"/><text x="${x + 26}" y="79" text-anchor="middle" class="m" font-size="12" fill="${p.ink}">${i + 1}</text>
+<text x="${x + 48}" y="80" class="a" font-size="16" fill="${p.ink}">${esc(title)}</text>${lines}
+${tag ? `<rect x="${x + 14}" y="200" width="${tag.length * 6.6 + 14}" height="18" fill="none" stroke="${tag.startsWith("!") ? p.red : p.green}"/><text x="${x + 21}" y="213" class="m" font-size="10.5" fill="${tag.startsWith("!") ? p.red : p.green}">${esc(tag.replace(/^!/, ""))}</text>` : ""}</g>
+${i < n - 1 ? `<path d="M${x + w + 2} 130h${gap - 6}" stroke="${p.ink}" stroke-width="1.5"/><path d="M${x + w + gap - 4} 126l5 4-5 4z" fill="${p.ink}"/>` : ""}`;
+  }).join("");
+  const band = c.band ? `<rect x="${x0}" y="254" width="${W - 2 * x0}" height="${h - 254 - 40}" fill="none" stroke="${p.blue}" stroke-width="1.5" stroke-dasharray="6 4"/>
+<text x="${x0 + 16}" y="280" class="m" font-size="11" letter-spacing="1.5" fill="${p.blue}">${esc(c.band.label)}</text>
+${c.band.items.map((t, i) => `<text x="${x0 + 16 + (i % 2) * ((W - 2 * x0) / 2)}" y="${308 + Math.floor(i / 2) * 22}" class="s" font-size="13.5" fill="${p.ink}">${esc(t)}</text>`).join("")}` : "";
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${h}" viewBox="0 0 ${W} ${h}" role="img" aria-label="${esc(c.label || "How it works")}">
+<defs>${sheetDefs(p)}</defs>
+<style>${fontFace("archivo", "archivo5", "plexmono")}
+.a{font-family:archivo,"Segoe UI",sans-serif}.s{font-family:archivo5,"Segoe UI",sans-serif}.m{font-family:plexmono,Consolas,monospace}
+.st{animation:st 8s ease-out infinite backwards}@keyframes st{0%{opacity:.25}6%,92%{opacity:1}100%{opacity:.25}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important}}</style>
+${sheetFrame(p, W, h)}${st}${band}
+</svg>
+`;
+}
+
 function baseDivider(c) {
   const col = c.divider || c.a;
   if (c.flatDivider || c.theme === "agency" || c.theme === "mono") return `<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="10" viewBox="0 0 1280 10"><rect x="0" y="4" width="1280" height="2" fill="${"#737373"}"/></svg>\n`;
@@ -637,7 +720,7 @@ function baseDivider(c) {
 
 // Generic, public themes. Project-specific themes live in your data folder (data/themes.mjs) and are
 // merged on top, so a theme there with the same name wins.
-const BASE = { mono: agency, fieldcrm, indigo, hud, island, godcut, aether, ledger, forge, blueprint, heartbeat, reactor, pocket, digest, popup, pipeline, relay, drafting, tape };
+const BASE = { mono: agency, fieldcrm, indigo, hud, island, godcut, aether, ledger, forge, blueprint, heartbeat, reactor, pocket, digest, popup, pipeline, relay, drafting, tape, drawingsheet };
 let custom = {};
 try {
   const { DATA } = await import("./data.mjs");
